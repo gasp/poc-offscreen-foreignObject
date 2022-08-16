@@ -1,0 +1,5 @@
+node_modules/
+dist/
+lib/dom-to-image
+lib/html-to-image
+.parcel-cache
