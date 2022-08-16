@@ -1,5 +1,3 @@
-const a = 1;
-
 const util = {
     width: function (node) {
         var leftBorder = util.px(node, 'border-left-width');
@@ -53,7 +51,7 @@ const util = {
 * @param {Boolean} options.cacheBust - set to true to cache bust by appending the time to the request url
 * @return {Promise} - A promise that is fulfilled with a SVG image data URL
 * */
-export function toSvg(node, options) {
+export function toSvg(node, options, key: string) {
     options = options || {
         bgcolor: '#fff',
         width: null,
@@ -65,12 +63,19 @@ export function toSvg(node, options) {
     };
     return Promise.resolve(node)
         .then(function (node) {
-            return cloneNode(node, options.filter, true);
+            return cloneNode(node, options.filter, true, key);
         })
         // .then(embedFonts)
         // .then(inlineImages)
         .then(applyOptions)
         .then(function (clone) {
+            // console.log('💊 cloned (shadow) DOM', clone);
+            const clickedElement = clone.querySelector('[data-click]')
+            clickedElement.style.border = '1px solid pink'
+            const box = clickedElement.getBoundingClientRect()
+            console.log({ clickedElement, box })
+
+            
             return makeSvgDataUri(clone,
                 options.width || util.width(node),
                 options.height || util.height(node)
@@ -94,9 +99,16 @@ export function toSvg(node, options) {
 }
 
 
-function cloneNode(node, filter, root: boolean) {
+function cloneNode(node, filter, root: boolean, key: string) {
     if (!root && filter && !filter(node)) return Promise.resolve();
-
+    
+    if(node instanceof HTMLElement) {
+        if (node.dataset.click === key) {
+            const box = node.getBoundingClientRect()
+            console.log('🪡 here is the needle in the haystack being cloned', node, box)
+        }
+    }
+    
     return Promise.resolve(node)
         .then(makeNodeCopy)
         .then(function (clone) {
@@ -107,7 +119,12 @@ function cloneNode(node, filter, root: boolean) {
         });
 
     function makeNodeCopy(node) {
+       
         // if (node instanceof HTMLCanvasElement) return util.makeImage(node.toDataURL());
+        // cloneNode(deep: boolean)
+        // if deep == true, then the node and its whole subtree, including text that may be in child Text nodes, is also copied.
+        // if deep == false, only the node will be cloned. The subtree, including any text that the node contains, is not cloned.
+        // more doc: https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode
         return node.cloneNode(false);
     }
 
@@ -126,7 +143,7 @@ function cloneNode(node, filter, root: boolean) {
                 done = done
                     .then(function () {
                         // recursivity!
-                        return cloneNode(child, filter, false);
+                        return cloneNode(child, filter, false, key);
                     })
                     .then(function (childClone) {
                         if (childClone) parent.appendChild(childClone);
