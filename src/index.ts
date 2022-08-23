@@ -22,7 +22,8 @@ document.addEventListener('mousedown', (ev) => {
   const clickKey = Date.now().toString(36)
   ;(ev.target as Element).setAttribute('data-click', clickKey)
 
-  capture(clickKey)
+  // disable that for now
+  // capture(clickKey)
 })
 
 if (window.Worker) {
