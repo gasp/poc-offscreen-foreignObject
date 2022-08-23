@@ -73,6 +73,7 @@ export function toSvg(node, options, key: string) {
             const clickedElement = clone.querySelector('[data-click]')
             clickedElement.style.border = '1px solid pink'
             const box = clickedElement.getBoundingClientRect()
+            // const bbox = (clickedElement as SVGAElement).getBBox();
             console.log({ clickedElement, box })
 
             

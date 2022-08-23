@@ -5,6 +5,7 @@
   },
   "dependencies": {
     "@bubkoo/tsconfig": "^1.0.0",
+    "@types/sharedworker": "^0.0.80",
     "eslint": "^8.22.0",
     "parcel": "^2.7.0",
     "prettier": "^2.7.1",
