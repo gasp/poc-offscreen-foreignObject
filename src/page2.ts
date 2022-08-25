@@ -1,21 +1,14 @@
-const myWorker = new Worker(
-  new URL('./workers/sampleWorker.ts', import.meta.url),
-  {
-    type: 'module',
-  },
-)
+import html2canvas from 'html2canvas'
+import { clonNode } from './lib/foreignObject'
 
-myWorker.onmessage = (event) => {
-  console.log('Message received from webWorker', event.data)
-}
 
-const sharedWorker = new SharedWorker(
-  new URL('./workers/sampleWorker.ts', import.meta.url),
-  {
-    type: 'module',
-  },
-)
 
-sharedWorker.port.onmessage = (event) => {
-  console.log('Message received from sharedWorker', event.data)
-}
+document.querySelector('#photo').addEventListener('click', () => {
+  const clone = cloneNode(document.documentElement, undefined, true, '123')
+  html2canvas(document.querySelector('body')).then(canvas => {
+    document.body.appendChild(canvas)
+  })
+  html2canvas(clone).then(canvas => {
+    document.body.appendChild(canvas)
+  })
+})

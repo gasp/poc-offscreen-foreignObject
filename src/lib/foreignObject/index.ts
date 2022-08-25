@@ -77,7 +77,7 @@ export function toSvg(node, options, key: string) {
             console.log({ clickedElement, box })
 
             makeDomInAnIframe(clone, 1024)
-            
+
             return makeSvgDataUri(clone,
                 options.width || util.width(node),
                 options.height || util.height(node)
@@ -101,16 +101,16 @@ export function toSvg(node, options, key: string) {
 }
 
 
-function cloneNode(node, filter, root: boolean, key: string) {
+export function cloneNode(node, filter, root: boolean, key: string) {
     if (!root && filter && !filter(node)) return Promise.resolve();
-    
+
     if(node instanceof HTMLElement) {
         if (node.dataset.click === key) {
             const box = node.getBoundingClientRect()
             console.log('🪡 here is the needle in the haystack being cloned', node, box)
         }
     }
-    
+
     return Promise.resolve(node)
         .then(makeNodeCopy)
         .then(function (clone) {
@@ -121,7 +121,7 @@ function cloneNode(node, filter, root: boolean, key: string) {
         });
 
     function makeNodeCopy(node) {
-       
+
         // if (node instanceof HTMLCanvasElement) return util.makeImage(node.toDataURL());
         // cloneNode(deep: boolean)
         // if deep == true, then the node and its whole subtree, including text that may be in child Text nodes, is also copied.
@@ -280,7 +280,7 @@ async function makeDomInAnIframe(node, width) {
 
     const winUrl = URL.createObjectURL(
         new Blob([winHtml], { type: "text/html" })
-        
+
     );
 
     const win = window.open(
@@ -295,7 +295,7 @@ async function makeDomInAnIframe(node, width) {
     // var myWindow = window.open('about:blank', 'loading...', '');
     // var myWindowDoc = myWindow.document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', null);
     // var myWindowBody = myWindow.document.createElementNS('http://www.w3.org/1999/xhtml', 'body');
-    
+
     // myWindow.document.open().write('<html><head></head><body><div id="targetDiv"></div></body></html>');
     // myWindow.document.close();
 

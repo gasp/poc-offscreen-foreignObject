@@ -3,27 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <title>other page</title>
-    <style media="screen">
-      .header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: #ccc;
-        padding: 0.5rem;
-      }
-      main {
-        margin: 2rem;
-      }
-    </style>
+    <link rel="stylesheet" href="main.css">
     <script>var exports = {};</script>
-    <script type="module" src="index.ts" charset="utf-8"></script>
+    <script type="module" src="page2.ts" charset="utf-8"></script>
   </head>
   <body>
     <div class="header">
       <nav><a href="/">home</a> | page 2</nav>
     </div>
     <main>
+      <section><a id="photo">take a picture</a></section>
       <section>
         <h1>Another page</h1>
         <p>Let's hope that the previous page saved it all</p>
