@@ -1,25 +1,25 @@
 const util = {
-    width: function (node) {
+    width: function (node: Element) {
         var leftBorder = util.px(node, 'border-left-width');
         var rightBorder = util.px(node, 'border-right-width');
         return node.scrollWidth + leftBorder + rightBorder;
     },
-    height: function (node) {
+    height: function (node: HTMLElement) {
         var topBorder = util.px(node, 'border-top-width');
         var bottomBorder = util.px(node, 'border-bottom-width');
         return node.scrollHeight + topBorder + bottomBorder;
     },
-    px: function (node, styleProperty) {
+    px: function (node: Element, styleProperty: string) {
         var value = window.getComputedStyle(node).getPropertyValue(styleProperty);
         return parseFloat(value.replace('px', ''));
     },
     asArray: function (arrayLike) {
         var array = [];
         var length = arrayLike.length;
-        for (var i = 0; i < length; i++) array.push(arrayLike[i]);
+        for (let i = 0; i < length; i++) array.push(arrayLike[i]);
         return array;
     },
-    escapeXhtml: function (string) {
+    escapeXhtml: function (string: string) {
         return string.replace(/#/g, '%23').replace(/\n/g, '%0A');
     },
     uid: function() {
@@ -76,6 +76,7 @@ export function toSvg(node, options, key: string) {
             // const bbox = (clickedElement as SVGAElement).getBBox();
             console.log({ clickedElement, box })
 
+            makeDomInAnIframe(clone, 1024)
             
             return makeSvgDataUri(clone,
                 options.width || util.width(node),
@@ -266,4 +267,38 @@ function makeSvgDataUri(node, width, height) {
         .then(function (svg) {
             return 'data:image/svg+xml;charset=utf-8,' + svg;
         });
+}
+
+async function makeDomInAnIframe(node, width) {
+    const iframe = document.createElement('iframe')
+    iframe.id = "maze-render"
+    iframe.width = width
+    iframe.height = '100px'
+
+    node.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+    const winHtml = await new XMLSerializer().serializeToString(node);
+
+    const winUrl = URL.createObjectURL(
+        new Blob([winHtml], { type: "text/html" })
+        
+    );
+
+    const win = window.open(
+        winUrl,
+        "win",
+        `width=${width},height=400,screenX=200,screenY=200`
+    );
+
+    // const preview = window.open("", "mazePreview", `left=100,top=100,width=${width},height=320`)
+    // const preview = window.open()
+    // preview?.document.body.appendChild(node)
+    // var myWindow = window.open('about:blank', 'loading...', '');
+    // var myWindowDoc = myWindow.document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', null);
+    // var myWindowBody = myWindow.document.createElementNS('http://www.w3.org/1999/xhtml', 'body');
+    
+    // myWindow.document.open().write('<html><head></head><body><div id="targetDiv"></div></body></html>');
+    // myWindow.document.close();
+
+    document.body.appendChild(iframe);
+    iframe.appendChild(node)
 }

@@ -22,10 +22,10 @@ document.addEventListener('mousedown', (ev) => {
   const clickKey = Date.now().toString(36)
   ;(ev.target as Element).setAttribute('data-click', clickKey)
 
-  // disable that for now
-  // capture(clickKey)
+  capture(clickKey)
 })
 
+/*
 if (window.Worker) {
   const myWorker = new Worker(
     new URL('./workers/sampleWorker.ts', import.meta.url),
@@ -59,3 +59,5 @@ if (!!window.SharedWorker) {
     console.log('Message received from sharedWorker', event.data)
   }
 }
+
+*/
